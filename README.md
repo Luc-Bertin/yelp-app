@@ -6,8 +6,8 @@
 ```
 db.getCollection('businesses').findOne({})
 ```
-#### Trouver tous les Businesses pour une ville == VARIALBE, 
- --> par ordre alphabétique (au départ, et on aimerait un truc NOT CASE SENSITIVE, c'est mieux) 
+### * Trouver tous les Businesses pour une ville == VARIALBE, 
+ par ordre alphabétique (au départ, et on aimerait un truc NOT CASE SENSITIVE, c'est mieux) 
 ```
 variable_city = 'Scottsdale'
 //from Mongo 3.4 !!!
@@ -18,14 +18,14 @@ project2 = { $project : { business_name:1 } }
 db.getCollection('businesses').aggregate([add_fields, match, sort, project2])
 ```
 
-#### si on veut sort par moyenne d'avis => voir section correspondante dans ce fichier
+### * si on veut sort par moyenne d'avis => voir section correspondante dans ce fichier
 
 
-#### Afficher tous les noms des categories (pour faire une liste de catégories à sélectionner par exemple) :
+### * Afficher tous les noms des categories (pour faire une liste de catégories à sélectionner par exemple) :
 ```
 db.getCollection("businesses").distinct('categories')
 ```
-#### Afficher tous les différentes villes  (pour une liste de villes à sélectionner par exemple) :
+### * Afficher tous les différentes villes  (pour une liste de villes à sélectionner par exemple) :
 ```
 db.getCollection("businesses").distinct('city')
 ```
@@ -51,7 +51,7 @@ Il est donc mieux de dresser une liste avec selection du "MacDonald's" sur d'aut
 
 ## FIN DU PETIT EXPLICATIF ----------
 
-#### Businesses ayant QUE des NOTES >= VARIABLE ( <=> AUCUNE note dessous de 4.0)
+### * Businesses ayant QUE des NOTES >= VARIABLE ( <=> AUCUNE note dessous de 4.0)
 ```
 variable = 4.0 
 filter = { "reviews.stars" : {$not : {$lt: variable}}}
@@ -59,7 +59,7 @@ projection = { "business_name":1, "reviews.stars":1 }
 db.getCollection('businesses').find(filter, projection)
 ```
 
-#### Calcul de la moyenne totale des avis/notes pour les businesses
+### * Calcul de la moyenne totale des avis/notes pour les businesses
 ```
 unwind = { $unwind : "$reviews" };
 group = { $group : { _id :"$_id", 
@@ -71,7 +71,7 @@ sort = { $sort : { moyenne_reviews: -1 }}
 db.getCollection('businesses').aggregate([unwind, group, sort])
 ```
 
-#### Business ayant en MOYENNE des NOTES >= VARIABLE
+### * Business ayant en MOYENNE des NOTES >= VARIABLE
 ```
 variable_note_mini = 4.0
 unwind = { $unwind : "$reviews" };
@@ -85,7 +85,7 @@ match = { $match : { moyenne_reviews : { $gte : variable_note_mini} }}
 db.getCollection('businesses').aggregate([unwind, group, sort, match])
 ```
 
-#### Business ayant en MOYENNE des NOTES >= VARIABLE1 et une VILLE selectionnée: VARIABLE2
+### * Business ayant en MOYENNE des NOTES >= VARIABLE1 et une VILLE selectionnée: VARIABLE2
 --> A demander à Théo, la commande suivante est logiquement la meme que celle precedente mais avec 
 --> un critère supplémentaire, il faut voir s'il est possible de faire des if (isset (variable)) then XXXX
 ```
@@ -103,7 +103,7 @@ sort = { $sort : { moyenne_reviews: -1 }}
 db.getCollection('businesses').aggregate([unwind, group, sort, match])
 ```
 
-#### Meilleurs Businesses ayant eu la meilleure moyenne de votes 'VARIABLE', VARIABLE étant soit (FUNNY / COOL / ou USEFUL) 
+### * Meilleurs Businesses ayant eu la meilleure moyenne de votes 'VARIABLE', VARIABLE étant soit (FUNNY / COOL / ou USEFUL) 
 --> Note: c'est donc par ordre décroissant de votes dans une catégorie, 
 --> Pour Théo : Si tu veux juste avoir les 10 premiers tu peux couper le JSON en sortie ou on peut tjrs rajouter une commande
 ```
@@ -126,9 +126,9 @@ sort = { $sort : doc }
 db.getCollection('businesses').aggregate([unwind, group, sort])
 ```
 
-####  POUR LES CHECKINS MAINTENANT :
+### *  POUR LES CHECKINS MAINTENANT :
 
-####obtenir les checkins d'un restaurant sommés pour chaque jour de la semaine une fois avoir sélectionné dans la liste et obtenu son id
+### *obtenir les checkins d'un restaurant sommés pour chaque jour de la semaine une fois avoir sélectionné dans la liste et obtenu son id
 --> exemple avec "_id" : "--5jkZ3-nUPZxUvtcbr8Uw"
 
 ```
@@ -151,10 +151,10 @@ db.getCollection('businesses').aggregate([match, unwind, group, add_fields, proj
 ```
 
 
-#### obtenir les restaurants ayant eu le plus de checkins pour un jour donné
+### * obtenir les restaurants ayant eu le plus de checkins pour un jour donné
 
-#### les premières lignes donnent un tri par jour les plus enregistrés (indépedemment du jour sélectionné, pour tous les businesses)
-####  on filtre ensuite par la variable 
+### * les premières lignes donnent un tri par jour les plus enregistrés (indépedemment du jour sélectionné, pour tous les businesses)
+### *  on filtre ensuite par la variable 
 ```
 unwind = { $unwind : "$checkins" }
 group = { $group : {_id: { id_business : "$_id", day_checkins : "$checkins.day"},
@@ -169,9 +169,9 @@ add_fields = { $addFields : { _id: "$id_business"}}
 project2 = { $project : { id_business:0 } } 
 sort = { $sort : {count_checkins_day : -1}}
 ```
-#### (Theo : juste pour que tu vois le résultat sans utiliser de variable)
+### * (Theo : juste pour que tu vois le résultat sans utiliser de variable)
 db.getCollection('businesses').aggregate([unwind, group, project, add_fields, project2, sort])
-#### avec VARIABLE dans la liste ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] 
+### * avec VARIABLE dans la liste ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] 
 ```
 VARIABLE_LIST_DAYS_POSSIBILITIES = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] // variable ne peut que faire parti de la liste de choix prédéfinie
 var variable_which_day = VARIABLE_LIST_DAYS_POSSIBILITIES[0]
@@ -179,9 +179,9 @@ match = { $match : { day : variable_which_day} }
 //we could use a cumsum too
 db.getCollection('businesses').aggregate([unwind, group, project, add_fields, project2, sort, match])
 ```
-#### encore une fois on peut toujours s'arrêter à 10 business, j'ai juste laissé la liste entière au cas où
+### * encore une fois on peut toujours s'arrêter à 10 business, j'ai juste laissé la liste entière au cas où
 
-####  Checkins a chaque heure, pour chaque jour, pour tous les restaurants cumulés (pourrait être une requête de Data Scientist)
+### *  Checkins a chaque heure, pour chaque jour, pour tous les restaurants cumulés (pourrait être une requête de Data Scientist)
 ```
 unwind = { $unwind : "$checkins" }
 group = { $group : {_id : { hour : "$checkins.hour", day : "$checkins.day"}, //independently of business _ids
