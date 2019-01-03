@@ -7,7 +7,7 @@
 db.getCollection('businesses').findOne({})
 ```
 * Trouver tous les Businesses pour une ville == VARIALBE, 
-### par ordre alphabétique (au départ, et on aimerait un truc NOT CASE SENSITIVE, c'est mieux) 
+ --> par ordre alphabétique (au départ, et on aimerait un truc NOT CASE SENSITIVE, c'est mieux) 
 ```
 variable_city = 'Scottsdale'
 //from Mongo 3.4 !!!
@@ -25,12 +25,12 @@ db.getCollection('businesses').aggregate([add_fields, match, sort, project2])
 ```
 db.getCollection("businesses").distinct('categories')
 ```
-### Afficher tous les différentes villes  (pour une liste de villes à sélectionner par exemple) :
+* Afficher tous les différentes villes  (pour une liste de villes à sélectionner par exemple) :
 ```
 db.getCollection("businesses").distinct('city')
 ```
 
-##PETIT EXPLICATIF DU BESOIN DE METTRE UNE LISTE EN SORTIE DANS LE CAS D'UNE RECHERCHE PAR LE USER ##
+## PETIT EXPLICATIF DU BESOIN DE METTRE UNE LISTE EN SORTIE DANS LE CAS D'UNE RECHERCHE PAR LE USER ##
 
 Il y a plus d'ID que de business_name, y aurait-il des business same for same city? OUI : LOGIQUE : le nom peut être le même (exemple MacDonald's) voici les commandes qui le montrent
 ```
@@ -126,7 +126,7 @@ sort = { $sort : doc }
 db.getCollection('businesses').aggregate([unwind, group, sort])
 ```
 
-### POUR LES CHECKINS MAINTENANT :
+*  POUR LES CHECKINS MAINTENANT :
 
 *obtenir les checkins d'un restaurant sommés pour chaque jour de la semaine une fois avoir sélectionné dans la liste et obtenu son id
 --> exemple avec "_id" : "--5jkZ3-nUPZxUvtcbr8Uw"
@@ -154,7 +154,7 @@ db.getCollection('businesses').aggregate([match, unwind, group, add_fields, proj
 * obtenir les restaurants ayant eu le plus de checkins pour un jour donné
 
 * les premières lignes donnent un tri par jour les plus enregistrés (indépedemment du jour sélectionné, pour tous les businesses)
-### on filtre ensuite par la variable 
+*  on filtre ensuite par la variable 
 ```
 unwind = { $unwind : "$checkins" }
 group = { $group : {_id: { id_business : "$_id", day_checkins : "$checkins.day"},
@@ -169,9 +169,9 @@ add_fields = { $addFields : { _id: "$id_business"}}
 project2 = { $project : { id_business:0 } } 
 sort = { $sort : {count_checkins_day : -1}}
 ```
-###(Theo : juste pour que tu vois le résultat sans utiliser de variable)
+* (Theo : juste pour que tu vois le résultat sans utiliser de variable)
 db.getCollection('businesses').aggregate([unwind, group, project, add_fields, project2, sort])
-###avec VARIABLE dans la liste ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] 
+* avec VARIABLE dans la liste ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] 
 ```
 VARIABLE_LIST_DAYS_POSSIBILITIES = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] // variable ne peut que faire parti de la liste de choix prédéfinie
 var variable_which_day = VARIABLE_LIST_DAYS_POSSIBILITIES[0]
@@ -179,9 +179,9 @@ match = { $match : { day : variable_which_day} }
 //we could use a cumsum too
 db.getCollection('businesses').aggregate([unwind, group, project, add_fields, project2, sort, match])
 ```
-###encore une fois on peut toujours s'arrêter à 10 business, j'ai juste laissé la liste entière au cas où
+* encore une fois on peut toujours s'arrêter à 10 business, j'ai juste laissé la liste entière au cas où
 
-### Checkins a chaque heure, pour chaque jour, pour tous les restaurants cumulés (pourrait être une requête de Data Scientist)
+*  Checkins a chaque heure, pour chaque jour, pour tous les restaurants cumulés (pourrait être une requête de Data Scientist)
 ```
 unwind = { $unwind : "$checkins" }
 group = { $group : {_id : { hour : "$checkins.hour", day : "$checkins.day"}, //independently of business _ids
