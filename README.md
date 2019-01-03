@@ -169,8 +169,11 @@ add_fields = { $addFields : { _id: "$id_business"}}
 project2 = { $project : { id_business:0 } } 
 sort = { $sort : {count_checkins_day : -1}}
 ```
-### * (Theo : juste pour que tu vois le résultat sans utiliser de variable)
+Theo : juste pour que tu vois le résultat sans utiliser de variable)
+```
 db.getCollection('businesses').aggregate([unwind, group, project, add_fields, project2, sort])
+
+```
 ### * avec VARIABLE dans la liste ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] 
 ```
 VARIABLE_LIST_DAYS_POSSIBILITIES = ["Monday", "Tuesday", "Wednesday","Thursday","Friday","Saturday","Sunday"] // variable ne peut que faire parti de la liste de choix prédéfinie
