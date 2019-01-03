@@ -2,10 +2,11 @@
 ---
 ## COLLECTION BUSINESS :
 
+
 ```
 db.getCollection('businesses').findOne({})
 ```
-### trouver tous les Businesses pour une ville == VARIALBE, 
+* Trouver tous les Businesses pour une ville == VARIALBE, 
 ### par ordre alphabétique (au départ, et on aimerait un truc NOT CASE SENSITIVE, c'est mieux) 
 ```
 variable_city = 'Scottsdale'
@@ -19,10 +20,13 @@ db.getCollection('businesses').aggregate([add_fields, match, sort, project2])
 ### si on veut sort par moyenne d'avis => voir section correspondante dans ce fichier
 
 ### Afficher tous les noms des categories (pour faire une liste de catégories à sélectionner par exemple) :
+```
 db.getCollection("businesses").distinct('categories')
+```
 ### Afficher tous les différentes villes  (pour une liste de villes à sélectionner par exemple) :
+```
 db.getCollection("businesses").distinct('city')
-
+```
 
 ##PETIT EXPLICATIF DU BESOIN DE METTRE UNE LISTE EN SORTIE DANS LE CAS D'UNE RECHERCHE PAR LE USER ##
 ### Il y a plus d'ID que de business_name, y aurait-il des business same for same city? 
